@@ -3,6 +3,7 @@
 // For example after user have loged in we can redirect page to user profile 
 // but only after request is susccesfull 
 
+// THIS IS DECLARATIVE
 // import { useNavigate } from "react-router-dom";
 
 // export const Login = () => {
@@ -30,3 +31,26 @@
 // replace is easy to use and short in code 
 // to do the same we would have to useState but it is much longer then just replace 
 
+
+// THIS IS IMPERATIVE
+import { Navigate, useState } from 'react-router-dom';
+
+export const Login = () => {
+    const [isLoginSuccess, setIsLoginSuccess] = useState(false);
+
+    const handleSubmit = async values => {
+        const response = await FakeAPI.login(values);
+        setIsLoginSuccess(response.success);
+    };
+
+    if (isLoginSuccess) {
+        return <Navigate to='/profile' replace />;
+    }
+
+    return (
+        <div>
+            <h1>Login page</h1>
+            <LoginForm onSubmit={handleSubmit}/>
+        </div>
+    );
+};
