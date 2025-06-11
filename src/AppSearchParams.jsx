@@ -107,3 +107,107 @@ const App = () => {
     </>
   );
 };
+
+// ======================================================================
+// LOCALIZATION OBJECT
+
+// every localization query is writen in object
+
+{
+  pathname: string;
+  search: string;
+  hash: string;
+  state: any;
+  key: string;
+}
+
+// forexample this url
+
+// <https://gomerch.it/products?name=hoodie&color=orange&maxPrice=500#agreement>
+
+// {
+//     'pathname': '/products',
+//     'search': "?name=hoodie&color=orange&maxPrice=500",
+//     "hash": "#agreement",
+//     "state": null,
+//     "key": "random-broweser-generated-id"
+// }
+
+// to use object that represent current url we need to use
+// useLocation() and asigne it to const one of example of using it is
+// send current ti analytics
+
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import Analytics from 'path/to/analytics-service';
+
+const App2 = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    Analytics.send(location);
+  }, [location]);
+
+  return <div></div>;
+};
+
+// lets say that user is searching our products for hoodie if he clicked
+// on product and would like to come back he would clicked on return button
+// he would go back to list of all products but we would not like that
+// se we would like to page to remember that user is searching for hoodie
+// to do that we need to use a state parameter form object location
+
+const ProductReturn = () => {
+  return (
+    <Link to="/products/h-1" state={{ from: '/dashboard?name=hoodie' }}>
+      Navigate to product h-1
+    </Link>
+  );
+};
+// this is just to show how it work
+// you dont have to calculate url structure
+
+const Products = () => {
+  const location = useLocation();
+
+  return (
+    <Link to="/product/h-1" state={{ from: loaction }}>
+      Navigation to product h-1
+    </Link>
+  );
+};
+
+// src/pages/ProductDetails.jsx
+
+const ProductDetails = () => {
+  const location = useLocation();
+  console.log(location.state);
+
+  // /products -> products/h-1
+  // { from: { pathname: "/products", search: "" } }
+
+  // /products?name=hoodie -> products/h-1
+  // { from: { pathname: "/products", search: "?name=hoodie" } }
+
+  return <Link to={location.state.from}>Back to products</Link>;
+};
+
+//======================================================================================
+// normally every copmonent load at loading a page but we dont need to to it
+// thinking about slower internet an phones we can add  lazy and suspanse method help is on that
+// its up developer to determine which elements are suppose to load first those are necessary
+// for page functioning
+
+import { lazy, Suspense } from 'react';
+
+const MyComponent = lazy(() => import('path/to/MyComponent'));
+
+const App4 = () => {
+  return (
+    <Suspense fallback={<div>Loading ...</div>}>
+      <Routes>
+        <Route path="/some-path" element={<MyComponent />} />
+      </Routes>
+    </Suspense>
+  );
+};
